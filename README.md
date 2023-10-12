@@ -16,5 +16,12 @@ where $k_B$ is the [Boltzmann constant](https://en.wikipedia.org/wiki/Boltzmann_
 
 **How close is the brain?** And what is the opposite of the Landauer limit? And therefore, the limit of intelligence? How far off are we as the human species?
 
+## Program
+
+```bash
+python boiler.py
+```
+
 ## Additional Information
 - [Hutter Prize](http://prize.hutter1.net/hfaq.htm): Frequently Asked Questions & Answers
+- [Huffman Coding](https://en.wikipedia.org/wiki/Huffman_coding): Decent starting point for [lossless compression](https://en.wikipedia.org/wiki/Lossless_compression).

@@ -1,2 +1,9 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+lib/__pycache__/
+*.py[cod]
+*$py.class
+
+# Data
 data/enwik8
 data/enwik9
