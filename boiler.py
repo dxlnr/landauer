@@ -6,19 +6,34 @@ from lib.utils import bitgen
 
 
 class Node:
-    def __init__(self, w, v=None, child=None):
+    def __init__(self, w, v=None, childs=[None, None]):
         self.w = w
         self.v = v
-        self.child = None
+        self.childs = childs
         self.enc = 0
+        self.depth = 0
 
     def __repr__(self):
-        return f"\n({chr(self.v)}) {self.w} : {bin(self.enc)}"
+        if self.v:
+            return f"({chr(self.v)}) {self.w} : {bin(self.enc)}"
+        else:
+            return f"{self.w} : {bin(self.enc)}"
+
+    def childs(self):
+        return self.childs
 
 
-def huffman():
+def dfs(n):
+    if n is None:
+        return
+    print("(dfs)", n)
+    for c in n.childs:
+        dfs(c)
+
+
+def huffman(enw=b'ADBADEDBBDD'):
     """Huffman coding"""
-    enw = open("data/enwik4", 'rb').read()
+    # enw = open("data/enwik4", 'rb').read()
     print(len(enw))
 
     lt = defaultdict(lambda: 0)
@@ -28,10 +43,34 @@ def huffman():
     lt = dict(sorted(lt.items(), key=lambda kv: kv[1]))
 
     ns = [Node(v, k) for k, v in lt.items()]
-    # for l, r in zip(ns):
-    #     nn = Node(w=((l.w + r.w) / len(enw)), child=[l,r])
-
+    print("-----")
     print(ns)
+    print("-----")
+    idx = 0
+
+    while ns:
+        if len(ns) <= 1:
+            break
+
+        left = ns.pop(0) if ns else None
+        right = ns.pop(0) if ns else None
+
+        nn = Node(w=((left.w + right.w)), childs=[left, right])
+        idx = - 1
+        for i in range(len(ns)):
+            if nn.w <= ns[i].w:
+                idx = i
+
+        ns.insert(idx, nn)
+
+    print("")
+    print(ns)
+    print("")
+
+    root = ns[0]
+    print(root)
+    print("DFS:")
+    dfs(root)
 
 
 def main():
