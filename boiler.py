@@ -14,24 +14,38 @@ class Node:
         self.depth = 0
 
     def __repr__(self):
-        if self.v:
-            return f"({chr(self.v)}) {self.w} : {bin(self.enc)}"
-        else:
-            return f"{self.w} : {bin(self.enc)}"
+        return f"({self.v}) {self.w} : {bin(self.enc)}"
 
-    def childs(self):
-        return self.childs
+    def __str__(self, level=0):
+        ret = "\t" * level + self.v + "\n"
+        for c in self.childs:
+            if c is not None:
+                ret += c.__str__(level + 1)
+        return ret
 
 
-def dfs(n):
+def enc(n):
     if n is None:
         return
-    print("(dfs)", n)
+
+    for idx, c in enumerate(n.childs):
+        if c is not None:
+            c.enc = (n.enc << 1) | idx
+
     for c in n.childs:
-        dfs(c)
+        enc(c)
 
 
-def huffman(enw=b'ADBADEDBBDD'):
+def _final(n: Node):
+    if n is None:
+        return
+    if n.v is not None:
+        print("(dfs)", repr(n))
+    for c in n.childs:
+        _final(c)
+
+
+def huffman(enw=b'A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED'):
     """Huffman coding"""
     # enw = open("data/enwik4", 'rb').read()
     print(len(enw))
@@ -42,11 +56,7 @@ def huffman(enw=b'ADBADEDBBDD'):
 
     lt = dict(sorted(lt.items(), key=lambda kv: kv[1]))
 
-    ns = [Node(v, k) for k, v in lt.items()]
-    print("-----")
-    print(ns)
-    print("-----")
-    idx = 0
+    ns = [Node(v, chr(k)) for k, v in lt.items()]
 
     while ns:
         if len(ns) <= 1:
@@ -56,21 +66,18 @@ def huffman(enw=b'ADBADEDBBDD'):
         right = ns.pop(0) if ns else None
 
         nn = Node(w=((left.w + right.w)), childs=[left, right])
-        idx = - 1
+        idx = len(ns)
         for i in range(len(ns)):
             if nn.w <= ns[i].w:
                 idx = i
+                break
 
         ns.insert(idx, nn)
 
-    print("")
-    print(ns)
-    print("")
-
     root = ns[0]
-    print(root)
-    print("DFS:")
-    dfs(root)
+    enc(root)
+
+    _final(root)
 
 
 def main():
