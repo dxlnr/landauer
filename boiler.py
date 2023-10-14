@@ -1,4 +1,5 @@
 """Compression"""
+from typing_extensions import Self
 import math
 from collections import defaultdict
 
@@ -6,50 +7,44 @@ from lib.utils import bitgen
 
 
 class Node:
-    def __init__(self, w, v=None, childs=[None, None]):
+    """Node of a binary tree
+
+    :param w: Weight of the node; frequency of appearance.
+    :param v: Symbol value.
+    :param childs: Children of the node.
+    """
+
+    def __init__(self, w: int, v: str = None, childs: list[Self] = [None, None]):
         self.w = w
         self.v = v
         self.childs = childs
         self.enc = 0
-        self.depth = 0
 
     def __repr__(self):
         return f"({self.v}) {self.w} : {bin(self.enc)}"
 
-    def __str__(self, level=0):
+    def tree(self, level=0):
         ret = "\t" * level + self.v + "\n"
         for c in self.childs:
             if c is not None:
-                ret += c.__str__(level + 1)
+                ret += c.tree(level + 1)
         return ret
 
-
-def enc(n):
-    if n is None:
-        return
-
-    for idx, c in enumerate(n.childs):
-        if c is not None:
-            c.enc = (n.enc << 1) | idx
-
-    for c in n.childs:
-        enc(c)
+    @staticmethod
+    def result(n: Self = None):
+        if n is None:
+            return
+        if n.v is not None:
+            print("(dfs)", repr(n))
+        for c in n.childs:
+            Node.result(c)
 
 
-def _final(n: Node):
-    if n is None:
-        return
-    if n.v is not None:
-        print("(dfs)", repr(n))
-    for c in n.childs:
-        _final(c)
+def huffman(enw: bytes) -> None:
+    """Huffman coding.
 
-
-def huffman(enw=b'A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED'):
-    """Huffman coding"""
-    # enw = open("data/enwik4", 'rb').read()
-    print(len(enw))
-
+    :param enw: Input bytes stream.
+    """
     lt = defaultdict(lambda: 0)
     for c in enw:
         lt[c] += 1
@@ -58,26 +53,30 @@ def huffman(enw=b'A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED'):
 
     ns = [Node(v, chr(k)) for k, v in lt.items()]
 
-    while ns:
-        if len(ns) <= 1:
-            break
-
+    while len(ns) > 1:
         left = ns.pop(0) if ns else None
         right = ns.pop(0) if ns else None
 
         nn = Node(w=((left.w + right.w)), childs=[left, right])
-        idx = len(ns)
-        for i in range(len(ns)):
-            if nn.w <= ns[i].w:
-                idx = i
-                break
 
+        idx = next((i for i, x in enumerate(ns) if nn.w <= x.w), len(ns))
         ns.insert(idx, nn)
+
+    def enc(n: Node):
+        """Finding encodings using the depth-first search algorithm."""
+        if n is None:
+            return
+        for idx, c in enumerate(n.childs):
+            if c is not None:
+                c.enc = (n.enc << 1) | idx
+        for c in n.childs:
+            enc(c)
 
     root = ns[0]
     enc(root)
 
-    _final(root)
+    # printing the final result.
+    Node.result(root)
 
 
 def main():
@@ -114,4 +113,6 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    huffman()
+    # enw = open("data/enwik4", 'rb').read()
+    enw = b'A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED'
+    huffman(enw)

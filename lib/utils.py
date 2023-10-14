@@ -1,5 +1,6 @@
-def bitgen(x):
-    """
+def bitgen(x: bytes):
+    """Converts bytes into bit stream.
+
     :params x: Iterable chars stream.
     :returns: Generator which converts chars into string of bits.
     """
