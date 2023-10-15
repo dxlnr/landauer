@@ -18,10 +18,10 @@ class Node:
         self.w = w
         self.v = v
         self.childs = childs
-        self.enc = 0
+        self.enc = ""
 
     def __repr__(self):
-        return f"({self.v}) {self.w} : {bin(self.enc)}"
+        return f"({self.v}) {self.w} : {self.enc}"
 
     def tree(self, level=0):
         ret = "\t" * level + self.v + "\n"
@@ -30,20 +30,12 @@ class Node:
                 ret += c.tree(level + 1)
         return ret
 
-    @staticmethod
-    def result(n: Self = None):
-        if n is None:
-            return
-        if n.v is not None:
-            print("(dfs)", repr(n))
-        for c in n.childs:
-            Node.result(c)
 
-
-def huffman(enw: bytes) -> None:
+def huffman(enw: bytes) -> int:
     """Huffman coding.
 
     :param enw: Input bytes stream.
+    :returns: Binary encoded input stream.
     """
     lt = defaultdict(lambda: 0)
     for c in enw:
@@ -62,25 +54,29 @@ def huffman(enw: bytes) -> None:
         idx = next((i for i, x in enumerate(ns) if nn.w <= x.w), len(ns))
         ns.insert(idx, nn)
 
-    def enc(n: Node):
+    def enc(n: Node, res: list[Node] = []):
         """Finding encodings using the depth-first search algorithm."""
         if n is None:
             return
         for idx, c in enumerate(n.childs):
             if c is not None:
-                c.enc = (n.enc << 1) | idx
+                c.enc = n.enc + str(idx)
+        if n.v is not None:
+            res.append(n)
         for c in n.childs:
-            enc(c)
+            enc(c, res)
 
-    root = ns[0]
-    enc(root)
+        return res
 
-    # printing the final result.
-    Node.result(root)
+    # compute the encodings.
+    encs = enc(ns[0])
+
+    # return the encoded input.
+    return int("".join(next(x.enc for x in encs if x.v == chr(c)) for c in enw), base=2)
 
 
 def main():
-    enw = open("data/enwik4", 'rb').read()
+    enw = open("data/enwik4", "rb").read()
     bg = bitgen(enw)
 
     number_of_bits = 16
@@ -114,5 +110,9 @@ def main():
 if __name__ == "__main__":
     # main()
     # enw = open("data/enwik4", 'rb').read()
-    enw = b'A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED'
-    huffman(enw)
+
+    enw = b"A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED"
+    true_res = 0b1000011101001000110010011101100111001001000111110010011111011111100010001111110100111001001011111011101000111111001
+    r = huffman(enw)
+    br = int(r, base=2)
+    print(br == true_res)
