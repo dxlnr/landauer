@@ -37,3 +37,4 @@ python -m unittest
 - [Hutter Prize](http://prize.hutter1.net/hfaq.htm): Frequently Asked Questions & Answers
 - [Huffman Coding](https://en.wikipedia.org/wiki/Huffman_coding): Decent starting point for [lossless compression](https://en.wikipedia.org/wiki/Lossless_compression).
 - [Arithmetic Coding](https://en.wikipedia.org/wiki/Arithmetic_coding) (AC) is a form of entropy encoding used in lossless data compression.
+- [enwik](https://mattmahoney.net/dc/textdata.html): About the Test Data.

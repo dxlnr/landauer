@@ -34,7 +34,7 @@ class Node:
 
 
 def huffman(enw: bytes) -> int:
-    """Huffman coding.
+    """Huffman coding. This works with ascii characters only.
 
     :param enw: Input bytes stream.
     :returns: Binary encoded input stream.
@@ -90,16 +90,14 @@ def decode_huffman(encs: int, encs_tree: list[Node]) -> str:
     pass
 
 
-def main():
-    enw = open("data/enwik4", "rb").read()
-    bg = bitgen(enw)
-
-    number_of_bits = 16
+def ctw(enw: bytes, nbits: int = 16):
+    """."""
     lookup = defaultdict(lambda: [1, 2])
     HH = 0.0
 
+    bg = bitgen(enw)
     try:
-        prevx = [-1] * number_of_bits
+        prevx = [-1] * nbits
         while True:
             x = next(bg)
 
@@ -114,7 +112,7 @@ def main():
             lookup[px][0] += x == 1
             lookup[px][1] += 1
             prevx.append(x)
-            prevx = prevx[-number_of_bits:]
+            prevx = prevx[-nbits:]
 
     except StopIteration:
         pass
@@ -133,7 +131,9 @@ if __name__ == "__main__":
         exit(1)
 
     if args.a == "huffman":
-        encs = huffman(enw)
+        encs, _ = huffman(enw)
+    elif args.a == "ctw":
+        encs = ctw(enw)
     else:
         print("No algorithm specified. Use -a <algorithm>")
         exit(1)
