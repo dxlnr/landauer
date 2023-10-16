@@ -1,6 +1,6 @@
 # Data Compression == AI
 
-**The Task**: Losslessly compress the 1GB file enwik9 to less than 114MB.
+**The Task**: Losslessly compress the 1GB file enwik9 to less than 114MB. (Current Benchmark)
 
 This compression contest ([Hutter Prize](http://prize.hutter1.net/)) is motivated by the fact that being able to compress well is closely related to acting intelligently, thus reducing the slippery concept of intelligence to hard file size numbers.
 
@@ -36,3 +36,4 @@ python -m unittest
 ## Additional Information
 - [Hutter Prize](http://prize.hutter1.net/hfaq.htm): Frequently Asked Questions & Answers
 - [Huffman Coding](https://en.wikipedia.org/wiki/Huffman_coding): Decent starting point for [lossless compression](https://en.wikipedia.org/wiki/Lossless_compression).
+- [Arithmetic Coding](https://en.wikipedia.org/wiki/Arithmetic_coding) (AC) is a form of entropy encoding used in lossless data compression.

@@ -5,7 +5,7 @@ from collections import defaultdict
 
 from typing_extensions import Self
 
-from lib.utils import bitgen, byterange, bytesize, create_arg_parser
+from utils import bitgen, byterange, bytesize, create_arg_parser
 
 
 class Node:
@@ -72,9 +72,22 @@ def huffman(enw: bytes) -> int:
 
     # compute the encodings.
     encs = enc(ns[0])
-
     # return the encoded input.
-    return int("".join(next(x.enc for x in encs if x.v == chr(c)) for c in enw), base=2)
+    return (
+        int("".join(next(x.enc for x in encs if x.v == chr(c)) for c in enw), base=2),
+        encs,
+    )
+
+
+def decode_huffman(encs: int, encs_tree: list[Node]) -> str:
+    """Decoding the input using the Huffman encodings."""
+
+    def get_bits(n: int, start: int, end: int) -> int:
+        """Return the value of the bits in specified range of n."""
+        mask = (1 << (end - start + 1)) - 1
+        return (n >> start) & mask
+
+    pass
 
 
 def main():
