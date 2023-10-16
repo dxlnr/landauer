@@ -19,7 +19,18 @@ where $k_B$ is the [Boltzmann constant](https://en.wikipedia.org/wiki/Boltzmann_
 ## Program
 
 ```bash
-python boiler.py
+# configs
+#
+# -a <algorithm> Options: 'huffman'
+# -d <input file>
+python boiler.py -d data/enwik4 -a huffman
+```
+
+## Testing
+
+Within and after development, there is a test script for evaluating the correctness of the different algorithms.
+```bash
+python -m unittest
 ```
 
 ## Additional Information

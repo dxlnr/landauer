@@ -1,9 +1,11 @@
 """Compression"""
-from typing_extensions import Self
 import math
+import sys
 from collections import defaultdict
 
-from lib.utils import bitgen
+from typing_extensions import Self
+
+from lib.utils import bitgen, byterange, bytesize, create_arg_parser
 
 
 class Node:
@@ -108,11 +110,24 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    # enw = open("data/enwik4", 'rb').read()
+    arg_parser = create_arg_parser()
+    args = arg_parser.parse_args(sys.argv[1:])
 
-    enw = b"A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED"
-    true_res = 0b1000011101001000110010011101100111001001000111110010011111011111100010001111110100111001001011111011101000111111001
-    r = huffman(enw)
-    br = int(r, base=2)
-    print(br == true_res)
+    if data := args.d:
+        enw = open(data, "rb").read()
+    else:
+        print("No data file specified. Use -d <file>")
+        exit(1)
+
+    if args.a == "huffman":
+        encs = huffman(enw)
+    else:
+        print("No algorithm specified. Use -a <algorithm>")
+        exit(1)
+
+    # Output the results.
+    benw = bytesize(enw)
+    bencs = bytesize(encs)
+    print(
+        f"res: {byterange(bencs)} ({byterange(benw)}), compression ratio: {bencs/benw:.2f}"
+    )
